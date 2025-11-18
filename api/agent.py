@@ -23,7 +23,7 @@ try:
     from langgraph.graph import StateGraph, END
     from langgraph.graph.message import add_messages
     from langchain_openai import ChatOpenAI
-    from langchain.schema import HumanMessage, SystemMessage
+    from langchain_core.messages import HumanMessage, SystemMessage
 except ImportError as e:
     # Graceful fallback for development without dependencies
     logging.warning(f"LangGraph dependencies not available: {e}")
