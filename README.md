@@ -204,37 +204,39 @@ Content is automatically optimized for each platform:
 
 ## 🚀 Deployment
 
-### Deploy to Vercel (Recommended)
+### Deploy to Streamlit.io (Recommended)
 
-1. **Install Vercel CLI**
-   ```bash
-   npm install -g vercel
-   ```
+This app is optimized for Streamlit.io deployment:
 
-2. **Login to Vercel**
-   ```bash
-   vercel login
-   ```
+1. **Push to GitHub** (✅ Done)
+   - Repository: `https://github.com/indpro-blr/indpro-writing-agent.git`
 
-3. **Deploy**
-   ```bash
-   vercel
-   ```
+2. **Deploy to Streamlit.io**
+   - Go to [share.streamlit.io](https://share.streamlit.io)
+   - Sign in with GitHub
+   - Click "New app"
+   - Select your repository and `app.py`
+   - Click "Deploy!"
 
-4. **Set Environment Variables**
-   ```bash
-   vercel env add OPENAI_API_KEY
-   # Enter your OpenAI API key when prompted
-   ```
+3. **Configure Secrets**
+   - In your app settings, go to "Secrets"
+   - Add your OpenAI API key:
+     ```toml
+     [general]
+     OPENAI_API_KEY = "sk-your-openai-api-key-here"
+     ```
+
+For detailed Streamlit deployment instructions, see [STREAMLIT_DEPLOYMENT.md](STREAMLIT_DEPLOYMENT.md).
 
 ### Alternative Deployments
 
+- **Vercel**: Use the included vercel.json for serverless deployment
 - **Docker**: Use the included Dockerfile for containerized deployment
 - **Heroku**: Compatible with Heroku's Python buildpack
 - **Railway**: Simple deployment with GitHub integration
 - **Local**: Run locally with `streamlit run app.py`
 
-For detailed deployment instructions, see [DEPLOYMENT.md](docs/DEPLOYMENT.md).
+For other deployment options, see [DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## 🧪 Testing
 

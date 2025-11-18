@@ -16,6 +16,13 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
+# Try to import Streamlit for secrets access
+try:
+    import streamlit as st
+    STREAMLIT_AVAILABLE = True
+except ImportError:
+    STREAMLIT_AVAILABLE = False
+
 class ConfigurationError(Exception):
     """Custom exception for configuration-related errors."""
     pass
@@ -47,31 +54,60 @@ class Config:
     def _load_config(self) -> None:
         """Load configuration from environment variables with defaults."""
         # OpenAI Configuration
-        self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-        self.MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4-turbo-preview")
+        self.OPENAI_API_KEY = self._get_config_value("OPENAI_API_KEY", "")
+        self.MODEL_NAME = self._get_config_value("MODEL_NAME", "gpt-4-turbo-preview")
         
         # Generation Parameters
-        self.MAX_TOKENS = int(os.getenv("MAX_TOKENS", "500"))
-        self.TEMPERATURE = float(os.getenv("TEMPERATURE", "0.7"))
-        self.TOP_P = float(os.getenv("TOP_P", "0.9"))
+        self.MAX_TOKENS = int(self._get_config_value("MAX_TOKENS", "500"))
+        self.TEMPERATURE = float(self._get_config_value("TEMPERATURE", "0.7"))
+        self.TOP_P = float(self._get_config_value("TOP_P", "0.9"))
         
         # Retry and Timeout Settings
-        self.MAX_RETRIES = int(os.getenv("MAX_RETRIES", "2"))
-        self.TIMEOUT = int(os.getenv("TIMEOUT", "30"))
+        self.MAX_RETRIES = int(self._get_config_value("MAX_RETRIES", "2"))
+        self.TIMEOUT = int(self._get_config_value("TIMEOUT", "30"))
         
         # Application Settings
-        self.LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+        self.LOG_LEVEL = self._get_config_value("LOG_LEVEL", "INFO").upper()
         
         # Deployment Settings
-        self.VERCEL_ENV = os.getenv("VERCEL_ENV", "development")
-        self.ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+        self.VERCEL_ENV = self._get_config_value("VERCEL_ENV", "development") 
+        self.ENVIRONMENT = self._get_config_value("ENVIRONMENT", "development")
         
         # Rate Limiting (tokens per minute)
-        self.RATE_LIMIT_TPM = int(os.getenv("RATE_LIMIT_TPM", "40000"))
+        self.RATE_LIMIT_TPM = int(self._get_config_value("RATE_LIMIT_TPM", "40000"))
         
         # Application Limits
-        self.MAX_DESCRIPTION_LENGTH = int(os.getenv("MAX_DESCRIPTION_LENGTH", "2000"))
-        self.MIN_DESCRIPTION_LENGTH = int(os.getenv("MIN_DESCRIPTION_LENGTH", "10"))
+        self.MAX_DESCRIPTION_LENGTH = int(self._get_config_value("MAX_DESCRIPTION_LENGTH", "2000"))
+        self.MIN_DESCRIPTION_LENGTH = int(self._get_config_value("MIN_DESCRIPTION_LENGTH", "10"))
+    
+    def _get_config_value(self, key: str, default: str) -> str:
+        """
+        Get configuration value from environment variables or Streamlit secrets.
+        
+        Args:
+            key: Configuration key to retrieve
+            default: Default value if key is not found
+            
+        Returns:
+            Configuration value as string
+        """
+        # First try environment variables
+        value = os.getenv(key)
+        if value is not None:
+            return value
+        
+        # Then try Streamlit secrets if available
+        if STREAMLIT_AVAILABLE:
+            try:
+                if hasattr(st, 'secrets') and key in st.secrets:
+                    return str(st.secrets[key])
+                elif hasattr(st, 'secrets') and 'general' in st.secrets and key in st.secrets['general']:
+                    return str(st.secrets['general'][key])
+            except Exception:
+                # Ignore errors accessing secrets (e.g., when not in Streamlit context)
+                pass
+        
+        return default
     
     def _validate_config(self) -> None:
         """
