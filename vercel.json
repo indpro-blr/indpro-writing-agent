@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "app.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.9"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "app.py"
+    }
+  ],
+  "env": {
+    "MODEL_NAME": "gpt-4-turbo-preview",
+    "MAX_TOKENS": "500",
+    "TEMPERATURE": "0.7",
+    "TOP_P": "0.9",
+    "MAX_RETRIES": "2",
+    "TIMEOUT": "30",
+    "LOG_LEVEL": "INFO",
+    "ENVIRONMENT": "production",
+    "VERCEL_ENV": "production"
+  },
+  "regions": ["iad1"]
+}

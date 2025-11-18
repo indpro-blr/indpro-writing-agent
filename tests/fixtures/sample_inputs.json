@@ -1,0 +1,155 @@
+{
+  "sample_descriptions": [
+    {
+      "id": 1,
+      "description": "Write about the benefits of remote work for productivity and work-life balance",
+      "category": "business",
+      "expected_topics": ["productivity", "work-life balance", "remote work", "flexibility"]
+    },
+    {
+      "id": 2,
+      "description": "Create a post about sustainable living tips for beginners",
+      "category": "lifestyle",
+      "expected_topics": ["sustainability", "environment", "eco-friendly", "tips"]
+    },
+    {
+      "id": 3,
+      "description": "Explain the importance of cybersecurity for small businesses",
+      "category": "technology",
+      "expected_topics": ["cybersecurity", "small business", "data protection", "security"]
+    },
+    {
+      "id": 4,
+      "description": "Share a personal story about overcoming challenges in career growth",
+      "category": "personal",
+      "expected_topics": ["career", "challenges", "growth", "personal development"]
+    },
+    {
+      "id": 5,
+      "description": "Write about the latest trends in artificial intelligence and machine learning",
+      "category": "technology",
+      "expected_topics": ["AI", "machine learning", "trends", "technology"]
+    }
+  ],
+  "mood_combinations": [
+    {
+      "name": "professional_confident",
+      "mood_values": {
+        "professional": 8,
+        "confident": 7,
+        "enthusiastic": 3,
+        "empathetic": 2,
+        "creative": 3,
+        "urgent": 4,
+        "friendly": 3,
+        "authoritative": 6,
+        "humorous": 1,
+        "inspiring": 4
+      },
+      "expected_characteristics": ["formal tone", "assertive language", "business appropriate"]
+    },
+    {
+      "name": "creative_inspiring",
+      "mood_values": {
+        "professional": 3,
+        "confident": 6,
+        "enthusiastic": 8,
+        "empathetic": 6,
+        "creative": 9,
+        "urgent": 2,
+        "friendly": 7,
+        "authoritative": 3,
+        "humorous": 5,
+        "inspiring": 9
+      },
+      "expected_characteristics": ["creative language", "motivational", "uplifting"]
+    },
+    {
+      "name": "friendly_humorous",
+      "mood_values": {
+        "professional": 4,
+        "confident": 5,
+        "enthusiastic": 7,
+        "empathetic": 6,
+        "creative": 6,
+        "urgent": 2,
+        "friendly": 9,
+        "authoritative": 2,
+        "humorous": 8,
+        "inspiring": 5
+      },
+      "expected_characteristics": ["casual tone", "funny", "approachable"]
+    }
+  ],
+  "platform_test_cases": [
+    {
+      "platform": "twitter",
+      "word_range": {"min": 1, "max": 50},
+      "character_limit": 280,
+      "test_content": "This is a sample tweet about productivity #productivity #remote",
+      "valid": true
+    },
+    {
+      "platform": "linkedin",
+      "word_range": {"min": 10, "max": 300},
+      "character_limit": 3000,
+      "test_content": "This is a professional LinkedIn post about career development and the importance of continuous learning in today's fast-paced business environment.",
+      "valid": true
+    },
+    {
+      "platform": "instagram",
+      "word_range": {"min": 5, "max": 150},
+      "character_limit": 2200,
+      "test_content": "Beautiful sunset today! 🌅 Reminded me of the importance of taking breaks and appreciating life's simple moments. #sunset #mindfulness #grateful",
+      "valid": true
+    }
+  ],
+  "edge_cases": [
+    {
+      "type": "empty_description",
+      "description": "",
+      "should_fail": true,
+      "expected_error": "Description cannot be empty"
+    },
+    {
+      "type": "very_short_description",
+      "description": "Hi",
+      "should_fail": true,
+      "expected_error": "Description must be at least 10 characters"
+    },
+    {
+      "type": "very_long_description",
+      "description": "This is a very long description that exceeds the maximum character limit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. This text continues to be extremely long to test the character limit validation functionality of the system. We need to ensure that descriptions exceeding 2000 characters are properly rejected with appropriate error messages.",
+      "should_fail": true,
+      "expected_error": "Description must be less than 2000 characters"
+    },
+    {
+      "type": "invalid_platform",
+      "description": "Valid description for testing",
+      "platform": "invalid_platform",
+      "should_fail": true,
+      "expected_error": "Invalid platform"
+    }
+  ],
+  "expected_outputs": [
+    {
+      "description": "Write about morning routines for productivity",
+      "platform": "linkedin",
+      "mood_values": {
+        "professional": 7,
+        "confident": 6,
+        "inspiring": 8,
+        "enthusiastic": 5,
+        "empathetic": 3,
+        "creative": 4,
+        "urgent": 2,
+        "friendly": 4,
+        "authoritative": 5,
+        "humorous": 2
+      },
+      "expected_word_count_range": [50, 250],
+      "should_contain": ["morning", "routine", "productivity"],
+      "should_not_contain": ["as an ai", "i can't", "i don't have access"]
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+/* Additional CSS styles for AI Writing Assistant */
+
+/* Custom button styles */
+.stButton > button {
+    background-color: #2a5b51;
+    color: #ffffff;
+    border-radius: 20px;
+    border: none;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.stButton > button:hover {
+    background-color: #000000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(42, 91, 81, 0.3);
+}
+
+/* Slider customization */
+.stSlider > div > div > div > div {
+    background-color: #2a5b51;
+}
+
+/* Selectbox styling */
+.stSelectbox > div > div > select {
+    border-radius: 10px;
+    border: 2px solid #2a5b51;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* Text area styling */
+.stTextArea > div > div > textarea {
+    border-radius: 10px;
+    border: 2px solid #2a5b51;
+    font-family: 'Arial', sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* Responsive design improvements */
+@media (max-width: 768px) {
+    .main .block-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .stColumns > div {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Loading animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+    border: 4px solid #ffffff;
+    border-top: 4px solid #2a5b51;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+    margin: 20px auto;
+}
+
+/* Custom metric styling */
+.metric-container {
+    background: linear-gradient(90deg, #2a5b51 0%, #000000 100%);
+    color: #ffffff;
+    padding: 1rem;
+    border-radius: 10px;
+    text-align: center;
+    margin: 0.5rem;
+}
+
+/* Success and error message styling */
+.success-alert {
+    background-color: #2a5b51;
+    border-color: #2a5b51;
+    color: #ffffff;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+.error-alert {
+    background-color: #000000;
+    border-color: #000000;
+    color: #ffffff;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
