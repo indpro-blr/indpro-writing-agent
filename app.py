@@ -147,6 +147,14 @@ st.markdown("""
         transition: all 0.3s;
     }
     
+    /* Selected preset button styling */
+    .preset-button-selected {
+        background-color: #2a5b51 !important;
+        color: #ffffff !important;
+        border-color: #2a5b51 !important;
+        box-shadow: 0 2px 4px rgba(42, 91, 81, 0.3);
+    }
+    
     /* Copy button styling */
     .copy-button-container {
         position: relative;
@@ -226,6 +234,11 @@ def initialize_session_state():
     
     if 'generation_metadata' not in st.session_state:
         st.session_state.generation_metadata = {}
+    
+    if 'selected_preset' not in st.session_state:
+        st.session_state.selected_preset = None
+        # Check if current mood values match any preset
+        check_active_preset()
 
 # Mood preset configurations
 MOOD_PRESETS = {
@@ -259,8 +272,26 @@ MOOD_PRESETS = {
 def apply_mood_preset(preset_name: str):
     """Apply a mood preset to session state."""
     if preset_name in MOOD_PRESETS:
-        st.session_state.mood_values.update(MOOD_PRESETS[preset_name])
+        # Update all mood values from the preset
+        for mood, value in MOOD_PRESETS[preset_name].items():
+            st.session_state.mood_values[mood] = value
+        
+        # Mark this preset as selected
+        st.session_state.selected_preset = preset_name
         st.rerun()
+
+def check_active_preset():
+    """Check if current mood values match any preset and update selected_preset accordingly."""
+    current_moods = st.session_state.mood_values
+    
+    for preset_name, preset_moods in MOOD_PRESETS.items():
+        if all(current_moods.get(mood, 0) == value for mood, value in preset_moods.items()):
+            st.session_state.selected_preset = preset_name
+            return preset_name
+    
+    # If no exact match, clear the selected preset
+    st.session_state.selected_preset = None
+    return None
 
 def reset_all_moods():
     """Reset all mood values to neutral (5 or appropriate default)."""
@@ -269,6 +300,7 @@ def reset_all_moods():
         'confident': 5, 'creative': 4, 'urgent': 2,
         'friendly': 4, 'authoritative': 3, 'humorous': 2, 'inspiring': 3
     }
+    st.session_state.selected_preset = None
     st.rerun()
 
 def render_header():
@@ -317,19 +349,34 @@ def render_mood_sliders():
     """Render the mood customization sliders."""
     st.subheader("Customize Tone & Mood")
     
+    # Initialize selected preset tracking
+    if 'selected_preset' not in st.session_state:
+        st.session_state.selected_preset = None
+    
     # Mood preset buttons
     st.markdown("**Quick Presets:**")
     cols = st.columns(len(MOOD_PRESETS))
     for i, preset_name in enumerate(MOOD_PRESETS.keys()):
         with cols[i]:
-            if st.button(preset_name, key=f"preset_{i}", use_container_width=True):
+            # Check if this preset is currently selected
+            is_selected = st.session_state.selected_preset == preset_name
+            button_type = "primary" if is_selected else "secondary"
+            
+            if st.button(
+                preset_name, 
+                key=f"preset_{i}", 
+                use_container_width=True,
+                type=button_type
+            ):
                 apply_mood_preset(preset_name)
+                st.session_state.selected_preset = preset_name
     
     # Reset button
     col1, col2, col3 = st.columns([1, 1, 3])
     with col1:
         if st.button("Reset All", use_container_width=True):
             reset_all_moods()
+            st.session_state.selected_preset = None
     
     st.markdown("---")
     
@@ -354,7 +401,7 @@ def render_mood_sliders():
     # First column moods
     with col1:
         for mood in moods[:5]:
-            st.session_state.mood_values[mood] = st.slider(
+            new_value = st.slider(
                 f"**{mood.title()}**",
                 min_value=0,
                 max_value=10,
@@ -362,11 +409,17 @@ def render_mood_sliders():
                 help=mood_descriptions.get(mood, f"Adjust {mood} intensity"),
                 key=f"slider_{mood}"
             )
+            # Update session state and check if manually changed
+            if new_value != st.session_state.mood_values[mood]:
+                st.session_state.mood_values[mood] = new_value
+                # Clear selected preset if user manually adjusts sliders
+                if st.session_state.selected_preset is not None:
+                    st.session_state.selected_preset = None
     
     # Second column moods
     with col2:
         for mood in moods[5:]:
-            st.session_state.mood_values[mood] = st.slider(
+            new_value = st.slider(
                 f"**{mood.title()}**",
                 min_value=0,
                 max_value=10,
@@ -374,6 +427,16 @@ def render_mood_sliders():
                 help=mood_descriptions.get(mood, f"Adjust {mood} intensity"),
                 key=f"slider_{mood}"
             )
+            # Update session state and check if manually changed
+            if new_value != st.session_state.mood_values[mood]:
+                st.session_state.mood_values[mood] = new_value
+                # Clear selected preset if user manually adjusts sliders
+                if st.session_state.selected_preset is not None:
+                    st.session_state.selected_preset = None
+    
+    # Show selected preset info
+    if st.session_state.selected_preset:
+        st.success(f"**Active Preset:** {st.session_state.selected_preset}")
     
     # Active moods summary
     active_moods = [(mood, value) for mood, value in st.session_state.mood_values.items() if value > 5]
@@ -671,7 +734,9 @@ def render_sidebar():
                     st.write(f"**Description:** {entry['description'][:100]}...")
                     st.write(f"**Words:** {entry['word_count']}")
                     if st.button(f"Reuse Settings", key=f"reuse_{i}"):
-                        st.session_state.mood_values = entry['mood_values']
+                        st.session_state.mood_values = entry['mood_values'].copy()
+                        # Check if the reused settings match any preset
+                        check_active_preset()
                         st.rerun()
         
         # Settings and help
