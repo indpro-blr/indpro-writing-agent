@@ -26,15 +26,5 @@ font = "sans serif"
 [logger]
 level = "info"
 
-[client]
-caching = true
-displayEnabled = true
-
 [runner]
 magicEnabled = true
-
-[mapbox]
-token = ""
-
-[deprecation]
-showfileUploaderEncoding = false
